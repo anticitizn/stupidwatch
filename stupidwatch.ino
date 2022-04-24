@@ -12,6 +12,11 @@ int button2 = 1;
 int button3 = 0;
 
 unsigned long mTime;
+unsigned long pressedTime;
+int hours;
+int minutes;
+int seconds;
+int milliseconds;
 
 void setup() {
   WiFi.mode(WIFI_OFF);
@@ -26,24 +31,31 @@ void setup() {
 void loop() { 
   digitalWrite(LED_BUILTIN, HIGH);
   display.clearDisplay();
-  mTime = millis();
+  mTime = millis() - pressedTime;
+  hours = (int) mTime / 3600000;
+  minutes = (int) (mTime - hours * 3600000) / 60000;
+  seconds = (int) (mTime - hours * 3600000 - minutes * 60000) / 1000;
+  milliseconds = (int) (mTime - hours * 3600000 - minutes * 60000 - seconds * 1000) / 10;
   
-  display.setTextSize(1);
+  display.setTextSize(2);
   display.setCursor(0, 0);
   display.setTextColor(WHITE);
-  display.println(mTime);
+  display.print(hours);
+  display.print(":");
+  display.print(minutes);
+  display.print('\n');
+  display.print(seconds);
+  display.print(".");
+  display.print(milliseconds);
 
   if (digitalRead(button1) == LOW)
   {
-    display.setCursor(0, 10);
-    display.println("Y");
     digitalWrite(LED_BUILTIN, LOW);
+    pressedTime = millis();
   }
 
   if (digitalRead(button2) == LOW)
   {
-    display.setCursor(10 , 10);
-    display.println("N");
     digitalWrite(LED_BUILTIN, LOW);
   }
 
